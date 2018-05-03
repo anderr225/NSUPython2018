@@ -67,7 +67,7 @@ class AlmostVector:
 
         """
 
-        return AlmostVector(tuple(self[i] + other[i] for i in range(self._length)))
+        return AlmostVector(tuple(x + y for x, y in zip(self._coordinates, other._coordinates)))
 
     def __sub__(self, other):
         """
@@ -77,7 +77,8 @@ class AlmostVector:
         :return: the result of subtracting one vector from another
 
         """
-        return AlmostVector(tuple(self[i] - other[i] for i in range(self._length)))
+
+        return AlmostVector(tuple(x - y for x, y in zip(self._coordinates, other._coordinates)))
 
     def __mul__(self, other):
         """
@@ -92,9 +93,9 @@ class AlmostVector:
 
         """
         if isinstance(other, (int, float, complex)):
-            return AlmostVector(tuple(self[i] * other for i in range(self._length)))
+            return AlmostVector(map(lambda x: x * other, self._coordinates))
         elif isinstance(other, AlmostVector):
-            return sum(self[i] * other[i] for i in range(self._length))
+            return sum(x * y for x, y in zip(self._coordinates, other._coordinates))
         else:
             raise TypeError("Wrong type: {}".format(type(other)))
 
@@ -137,9 +138,11 @@ class AlmostVector:
         :return: true if vectors are equal and false if not
 
         """
+        if self._length != other._length:
+            return False
 
-        return all(self[i] == other[i] for i in range(self._length))
-
-
-
+        for x, y in zip(other._coordinates, self._coordinates):
+            if x != y:
+                return False
+        return True
 
